@@ -2,25 +2,37 @@
 
 **{{EVENT_TAGLINE}}**
 
-<!-- TRACKS OPTIONAL: Remove the paragraph and table below for code-along events with no tracks -->
-Choose a track, open the kit, and ship a real AI prototype for your community.
+**{{EVENT_DATE}} · {{EVENT_LOCATION}}**
+
+---
+
+## Format Variants
+
+This template supports several event formats. Only the sections that apply to your format are included — remove or skip anything marked optional.
+
+| Format | Tracks? | Talk? | What to keep |
+|---|---|---|---|
+| Multi-track jam | ✅ | optional | Everything |
+| Themed code-along | ❌ | optional | Remove "Pick Your Track" section and `tracks/` folder |
+| Open build night | ❌ | ❌ | Remove tracks, talk, and slide files |
+| Custom tracks, no theme | ✅ | optional | Remove `{{EVENT_THEME}}` references |
 
 ---
 
 ## Before You Arrive
 
-Install these four things so you're ready to go the moment the jam starts:
+Install these four things so you're ready to go the moment the event starts:
 
 | Tool | Where to get it |
 |---|---|
 | **Antigravity** | [antigravity.google/download](https://antigravity.google/download) |
 | **uv** (Python manager) | [astral.sh/uv](https://astral.sh/uv) |
 | **Git + GitHub account** | [git-scm.com](https://git-scm.com) |
-| **Free Gemini API key** | [aistudio.google.com/app/apikey](https://aistudio.google.com/app/apikey) — free tier covers the whole jam |
+| **Free Gemini API key** | [aistudio.google.com/app/apikey](https://aistudio.google.com/app/apikey) — free tier covers the whole event |
 
 ---
 
-## Run a Kit in 90 Seconds
+## Get Started
 
 **Option A — Antigravity (no terminal needed)**
 
@@ -31,39 +43,35 @@ I'm at {{EVENT_NAME}}. Help me get set up:
 1. Check if uv is installed — if not, show me how to install it from astral.sh/uv
 2. Check if git is installed — if not, show me how to install it from git-scm.com
 3. Clone https://github.com/{{ORGANIZER_GITHUB}}/{{REPO_SLUG}}.git
-4. Open the tracks/ folder and tell me what each track does so I can pick one
 ```
 
-Antigravity will walk you through each step in plain language and run the commands for you.
+<!-- TRACKS OPTIONAL: Add step 4 below for multi-track events -->
+<!-- 4. Open the tracks/ folder and tell me what each track does so I can pick one -->
 
 **Option B — Terminal**
 
 ```bash
-# 1. Clone this repo
 git clone https://github.com/{{ORGANIZER_GITHUB}}/{{REPO_SLUG}}.git
-
-# 2. Go into your chosen track folder
-cd {{REPO_SLUG}}/tracks/{{TRACK_1_NAME}}
-
-# 3. Add your free Gemini key
-cp .env.example .env
-# open .env and paste your key next to GEMINI_API_KEY=
-
-# 4. Go
-uv run app.py
+cd {{REPO_SLUG}}
 ```
+
+<!-- TRACKS OPTIONAL: Replace the cd line above and add the block below for multi-track events
+cd {{REPO_SLUG}}/tracks/{{TRACK_1_NAME}}
+cp .env.example .env      # add your Gemini key
+uv run app.py
+-->
 
 ---
 
-<!-- TRACKS OPTIONAL: Remove this entire section for code-along events with no tracks -->
+<!-- TRACKS OPTIONAL: Remove this entire section for code-along or open build night events -->
 ## Pick Your Track
 
+<!-- Add or remove rows to match the number of tracks for this event -->
 | # | Track | What you'll build |
 |---|---|---|
 | 01 | **{{TRACK_1_NAME}}** | {{TRACK_1_DESC}} |
 | 02 | **{{TRACK_2_NAME}}** | {{TRACK_2_DESC}} |
-<!-- Add or remove rows to match the number of tracks for this event -->
-| 🌟 | **Your Idea** | No track? No problem. Use the codelab's spec builder to describe your community problem and let Antigravity build it with you |
+| 🌟 | **Your Idea** | Describe your community problem and let Antigravity build it with you |
 
 Each track folder contains:
 - `SPEC.md` — what to build and why
@@ -78,27 +86,31 @@ Each track folder contains:
 Follow the full guided walkthrough at the event site:
 👉 **[{{CODELAB_URL}}]({{CODELAB_URL}})**
 
-It walks you through:
+The codelab walks you through:
 1. Installing Antigravity
 2. Installing uv and git
-3. Cloning this repo and picking a track
+3. <!-- TRACKS OPTIONAL: "Picking a track" → replace with "Opening your project folder" for no-track events -->
+   Picking a track and opening the kit
 4. The Spec Talk — aligning the AI on what to build
 5. Generating 3 design docs (product, UI, engineering)
-6. Implementing and testing with AI
+6. Building and testing with AI
 7. Wiring up your Gemini API key
-8. Previewing, verifying, and shipping
+8. Running and sharing your app
 
 ---
 
 ## Event Details
 
-**{{EVENT_DATE}} · {{EVENT_LOCATION}}**
-Hosted by {{ORGANIZER_NAME}}
-
-Bring a laptop and an idea. Drop-ins welcome. The free Gemini API tier covers everything you need for the full jam.
+Hosted by **{{ORGANIZER_NAME}}**
+Bring a laptop and an idea. Drop-ins welcome. The free Gemini API tier covers everything you need.
 
 ---
 
 ## License
 
 MIT — build on it, fork it, take it home.
+
+---
+
+> **Template maintainers:** this README is part of the [build-jam-template](https://github.com/GDG-SAN-ANTONIO/build-jam-template).
+> Run `/new-event` in Claude Code to configure a fresh copy for your next event.
