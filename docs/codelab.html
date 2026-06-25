@@ -1,0 +1,853 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>{{EVENT_NAME}} · Codelab</title>
+<meta name="description" content="A step-by-step walkthrough to build and ship an AI-powered application using Antigravity." />
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&family=Public+Sans:wght@400;500;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+
+<style>
+  :root {
+    --ink: #0A0A0A;
+    --ink-2: #141414;
+    --cream: #F4ECDC;
+    --cream-dim: #cdc2ad;
+    --gold: #CE1126;
+    --clay: #CE1126;
+    --teal: #009A44;
+    --indigo: #CE1126;
+    --green: #009A44;
+    --line: rgba(244,236,220,.14);
+    --sidebar-w: 320px;
+    --header-h: 70px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--ink);
+    color: var(--cream);
+    font-family: "Public Sans", system-ui, sans-serif;
+    font-size: 16px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    overflow: hidden;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  a { color: var(--gold); text-decoration: none; border-bottom: 1px dashed rgba(206,17,38,0.4); transition: 0.2s; }
+  a:hover { color: var(--cream); border-bottom-color: var(--cream); }
+
+  .mono { font-family: "Space Mono", monospace; }
+  .display { font-family: "Bricolage Grotesque", sans-serif; font-weight: 800; }
+
+  .header {
+    height: var(--header-h);
+    background: rgba(20, 20, 20, 0.72);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--line);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 24px;
+    z-index: 10;
+    flex-shrink: 0;
+    position: relative;
+  }
+  .header-left { display: flex; align-items: center; gap: 16px; }
+  .back-home {
+    display: flex; align-items: center; gap: 8px;
+    font-family: "Space Mono", monospace; font-size: 0.85rem; color: var(--cream-dim);
+    border: 1px solid var(--line); padding: 6px 12px; border-radius: 20px; transition: 0.2s;
+  }
+  .back-home:hover { background: var(--cream); color: var(--ink); border-color: var(--cream); }
+  .header-title { font-size: 1.15rem; letter-spacing: -0.01em; }
+  .header-right {
+    display: flex; align-items: center; gap: 20px;
+    font-family: "Space Mono", monospace; font-size: 0.85rem; color: var(--cream-dim);
+  }
+  .time-remaining {
+    background: rgba(206, 17, 38, 0.1); color: var(--gold);
+    padding: 4px 10px; border-radius: 6px; font-weight: 700;
+  }
+
+  .progress-container { position: absolute; bottom: -1px; left: 0; width: 100%; height: 3px; background: var(--line); }
+  .progress-bar { height: 100%; width: 0%; background: linear-gradient(90deg, var(--gold), var(--green)); transition: width 0.3s ease; }
+
+  .app-body { display: flex; flex: 1; overflow: hidden; position: relative; }
+
+  .sidebar {
+    width: var(--sidebar-w); background: var(--ink-2);
+    border-right: 1px solid var(--line); display: flex; flex-direction: column;
+    overflow-y: auto; flex-shrink: 0; transition: transform 0.3s ease;
+  }
+  .steps-list { list-style: none; padding: 16px 0; }
+  .step-item {
+    display: flex; align-items: flex-start; gap: 12px; padding: 14px 24px;
+    cursor: pointer; transition: background 0.2s, border-left 0.2s; border-left: 3px solid transparent;
+  }
+  .step-item:hover { background: rgba(244, 236, 220, 0.03); }
+  .step-item.active { background: rgba(206, 17, 38, 0.05); border-left-color: var(--gold); }
+  .step-item.completed .step-num { background: var(--green); color: var(--ink); border-color: var(--green); }
+  .step-num {
+    width: 24px; height: 24px; border-radius: 50%; border: 1px solid var(--line);
+    display: flex; align-items: center; justify-content: center;
+    font-family: "Space Mono", monospace; font-size: 0.75rem; flex-shrink: 0; transition: 0.2s; background: var(--ink);
+  }
+  .step-info { display: flex; flex-direction: column; gap: 2px; }
+  .step-label { font-size: 0.92rem; font-weight: 500; color: var(--cream-dim); transition: color 0.2s; }
+  .step-item.active .step-label { color: var(--cream); font-weight: 700; }
+  .step-time { font-family: "Space Mono", monospace; font-size: 0.72rem; color: rgba(244, 236, 220, 0.4); }
+  .step-checkbox {
+    margin-left: auto; width: 16px; height: 16px; border-radius: 4px;
+    border: 1px solid var(--line); display: flex; align-items: center; justify-content: center;
+    font-size: 0.65rem; color: transparent; transition: 0.2s;
+  }
+  .step-item.completed .step-checkbox { background: var(--green); border-color: var(--green); color: var(--ink); }
+
+  .content-container {
+    flex: 1; overflow-y: auto; padding: 48px 24px;
+    display: flex; justify-content: center; background: var(--ink); position: relative;
+  }
+  .content-wrap { max-width: 780px; width: 100%; display: flex; flex-direction: column; }
+  .step-section { display: none; animation: fadeIn 0.35s ease forwards; }
+  .step-section.active { display: block; }
+
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+
+  h1.step-title { font-family: "Bricolage Grotesque", sans-serif; font-size: 2.3rem; line-height: 1.1; margin-bottom: 24px; letter-spacing: -0.02em; }
+  p { font-size: 1.05rem; color: var(--cream-dim); margin-bottom: 20px; line-height: 1.7; }
+  h2 { font-family: "Bricolage Grotesque", sans-serif; font-size: 1.6rem; margin: 32px 0 16px; letter-spacing: -0.01em; }
+  h3 { font-family: "Bricolage Grotesque", sans-serif; font-size: 1.25rem; margin: 24px 0 12px; }
+  ul, ol { margin-bottom: 20px; padding-left: 24px; color: var(--cream-dim); }
+  li { margin-bottom: 8px; line-height: 1.6; }
+  strong { color: var(--cream); }
+
+  .alert {
+    padding: 20px; border-radius: 12px; margin: 24px 0;
+    border: 1px solid var(--line); display: flex; flex-direction: column; gap: 6px;
+  }
+  .alert-title {
+    font-family: "Space Mono", monospace; font-size: 0.85rem; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.1em; display: flex; align-items: center; gap: 8px;
+  }
+  .alert-tip { background: rgba(0, 154, 68, 0.06); border-left: 4px solid var(--green); border-color: var(--green) var(--line) var(--line) var(--green); }
+  .alert-tip .alert-title { color: var(--green); }
+  .alert-warning { background: rgba(206, 17, 38, 0.06); border-left: 4px solid var(--gold); border-color: var(--gold) var(--line) var(--line) var(--gold); }
+  .alert-warning .alert-title { color: var(--gold); }
+  .alert-checkpoint { background: rgba(244, 236, 220, 0.03); border-left: 4px solid var(--cream-dim); border-color: var(--cream-dim) var(--line) var(--line) var(--cream-dim); }
+  .alert-checkpoint .alert-title { color: var(--cream); }
+
+  .code-container { position: relative; margin: 20px 0; }
+  pre {
+    background: #090704; border: 1px solid var(--line); border-radius: 12px;
+    padding: 20px; overflow-x: auto; font-family: "Space Mono", monospace;
+    font-size: 0.9rem; line-height: 1.6; color: var(--cream);
+  }
+  pre .c { color: rgba(244, 236, 220, 0.4); }
+  pre .p { color: var(--gold); font-weight: 700; }
+  .copy-btn {
+    position: absolute; top: 12px; right: 12px; background: rgba(244, 236, 220, 0.05);
+    border: 1px solid var(--line); color: var(--cream-dim); padding: 6px 12px;
+    border-radius: 6px; font-family: "Space Mono", monospace; font-size: 0.72rem; cursor: pointer; transition: 0.2s;
+  }
+  .copy-btn:hover { background: var(--cream); color: var(--ink); border-color: var(--cream); }
+
+  table { width: 100%; border-collapse: collapse; margin: 24px 0; font-size: 0.95rem; }
+  th, td { padding: 12px 16px; border: 1px solid var(--line); text-align: left; }
+  th { background: var(--ink-2); font-weight: 700; }
+  tr:nth-child(even) td { background: rgba(254, 254, 254, 0.01); }
+
+  .footer-nav {
+    height: 72px; background: var(--ink-2); border-top: 1px solid var(--line);
+    display: flex; align-items: center; justify-content: space-between; padding: 0 32px; flex-shrink: 0; z-index: 10;
+  }
+  .nav-btn {
+    font-family: "Space Mono", monospace; font-weight: 700; font-size: 0.85rem;
+    padding: 10px 22px; border-radius: 8px; cursor: pointer; transition: 0.2s;
+    display: inline-flex; align-items: center; gap: 8px;
+    border: 1px solid var(--line); background: transparent; color: var(--cream);
+  }
+  .nav-btn:hover { border-color: var(--cream); background: rgba(244, 236, 220, 0.05); }
+  .nav-btn.primary { background: var(--gold); border-color: var(--gold); color: #fff; }
+  .nav-btn.primary:hover { transform: translateY(-1px); background: var(--cream); border-color: var(--cream); color: var(--ink); }
+  .nav-btn:disabled { opacity: 0.3; pointer-events: none; }
+
+  .menu-toggle {
+    display: none; background: transparent; border: 1px solid var(--line); color: var(--cream);
+    width: 40px; height: 40px; border-radius: 8px; cursor: pointer; align-items: center; justify-content: center;
+  }
+
+  @media (max-width: 900px) {
+    .sidebar { position: absolute; top: 0; left: 0; bottom: 0; z-index: 5; transform: translateX(-100%); width: 290px; }
+    .sidebar.open { transform: translateX(0); box-shadow: 10px 0 30px rgba(0,0,0,0.5); }
+    .menu-toggle { display: flex; }
+    .header-title { font-size: 1rem; max-width: 240px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  }
+
+  .paste-label {
+    font-family: "Space Mono", monospace; font-size: 0.78rem; font-weight: 700;
+    color: var(--green); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 6px; display: block;
+  }
+
+  /* TRACKS OPTIONAL — track selection grid; remove this block for code-along events */
+  .track-select-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; margin: 24px 0; }
+  .track-select-card {
+    background: var(--ink-2); border: 1px solid var(--line); border-radius: 12px; padding: 20px;
+    cursor: pointer; transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
+    display: flex; flex-direction: column; gap: 10px; position: relative; border-left: 4px solid var(--c);
+  }
+  .track-select-card:hover { transform: translateY(-2px); border-color: var(--c); }
+  .track-select-card.selected { border-color: var(--c); background: rgba(244,236,220,0.02); box-shadow: 0 0 15px rgba(244,236,220,0.05); }
+  .tsc-header { display: flex; align-items: center; gap: 8px; }
+  .tsc-emoji { font-size: 1.5rem; }
+  .tsc-title { font-family: "Bricolage Grotesque", sans-serif; font-size: 1.15rem; font-weight: 800; }
+  .tsc-desc { font-size: 0.82rem; color: var(--cream-dim); line-height: 1.4; margin-bottom: 8px; }
+  .tsc-btn {
+    margin-top: auto; font-family: "Space Mono", monospace; font-size: 0.72rem; font-weight: 700;
+    padding: 6px 12px; border-radius: 6px; border: 1px solid var(--line);
+    background: transparent; color: var(--cream-dim); cursor: pointer; transition: 0.2s; text-align: center;
+  }
+  .track-select-card:hover .tsc-btn { border-color: var(--c); color: var(--cream); }
+  .track-select-card.selected .tsc-btn { background: var(--c); border-color: var(--c); color: #000; }
+
+  .spec-field { margin-bottom: 18px; display: flex; flex-direction: column; gap: 6px; }
+  .spec-input {
+    background: #090704; border: 1px solid var(--line); border-radius: 10px; padding: 12px 16px;
+    font-family: "Public Sans", sans-serif; font-size: 0.95rem; color: var(--cream); width: 100%; transition: border-color 0.2s;
+  }
+  .spec-input:focus { outline: none; border-color: var(--cream-dim); }
+  .spec-input::placeholder { color: rgba(244,236,220,0.3); }
+  .spec-generate-btn {
+    font-family: "Space Mono", monospace; font-size: 0.85rem; font-weight: 700;
+    padding: 12px 24px; border-radius: 8px; border: none; background: var(--green);
+    color: var(--ink); cursor: pointer; transition: 0.2s; margin-top: 8px;
+  }
+  .spec-generate-btn:hover { background: var(--cream); }
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="icon-chevron" viewBox="0 0 24 24"><path fill="currentColor" d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/></symbol>
+  <symbol id="icon-chevron-left" viewBox="0 0 24 24"><path fill="currentColor" d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></symbol>
+  <symbol id="icon-menu" viewBox="0 0 24 24"><path fill="currentColor" d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/></symbol>
+  <symbol id="icon-arrow-back" viewBox="0 0 24 24"><path fill="currentColor" d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></symbol>
+</svg>
+
+<header class="header">
+  <div class="header-left">
+    <button class="menu-toggle" id="menu-btn" aria-label="Toggle Navigation">
+      <svg width="24" height="24"><use href="#icon-menu"/></svg>
+    </button>
+    <a class="back-home" href="index.html">
+      <svg width="16" height="16" style="vertical-align: middle;"><use href="#icon-arrow-back"/></svg>
+      Home
+    </a>
+    <h1 class="header-title display">{{EVENT_NAME}} · Codelab</h1>
+  </div>
+  <div class="header-right">
+    <a href="resources.html" style="font-family:'Space Mono',monospace;font-size:.8rem;border:1px solid var(--line);padding:6px 14px;border-radius:20px;color:var(--cream-dim);transition:.2s;text-decoration:none;" onmouseover="this.style.background='var(--cream)';this.style.color='var(--ink)';this.style.borderColor='var(--cream)'" onmouseout="this.style.background='';this.style.color='var(--cream-dim)';this.style.borderColor='var(--line)'">Resources</a>
+    <span class="time-remaining" id="time-badge">75 min left</span>
+  </div>
+  <div class="progress-container">
+    <div class="progress-bar" id="progress-indicator"></div>
+  </div>
+</header>
+
+<div class="app-body">
+  <nav class="sidebar" id="sidebar-panel">
+    <ul class="steps-list">
+      <li class="step-item active" data-step="1">
+        <div class="step-num">1</div>
+        <div class="step-info">
+          <span class="step-label">Introduction &amp; Set Up</span>
+          <span class="step-time">5 min</span>
+        </div>
+        <div class="step-checkbox">✔</div>
+      </li>
+      <li class="step-item" data-step="2">
+        <div class="step-num">2</div>
+        <div class="step-info">
+          <span class="step-label">Install Tools &amp; Get the Code</span>
+          <span class="step-time">10 min</span>
+        </div>
+        <div class="step-checkbox">✔</div>
+      </li>
+      <!-- TRACKS OPTIONAL: Replace step 3 label and content with "Start Your Project" for code-along events -->
+      <li class="step-item" data-step="3">
+        <div class="step-num">3</div>
+        <div class="step-info">
+          <span class="step-label">Pick Your Track</span>
+          <span class="step-time">5 min</span>
+        </div>
+        <div class="step-checkbox">✔</div>
+      </li>
+      <li class="step-item" data-step="4">
+        <div class="step-num">4</div>
+        <div class="step-info">
+          <span class="step-label">The Spec Talk</span>
+          <span class="step-time">10 min</span>
+        </div>
+        <div class="step-checkbox">✔</div>
+      </li>
+      <li class="step-item" data-step="5">
+        <div class="step-num">5</div>
+        <div class="step-info">
+          <span class="step-label">Generate 3 Design Docs</span>
+          <span class="step-time">10 min</span>
+        </div>
+        <div class="step-checkbox">✔</div>
+      </li>
+      <li class="step-item" data-step="6">
+        <div class="step-num">6</div>
+        <div class="step-info">
+          <span class="step-label">Build &amp; Test</span>
+          <span class="step-time">20 min</span>
+        </div>
+        <div class="step-checkbox">✔</div>
+      </li>
+      <li class="step-item" data-step="7">
+        <div class="step-num">7</div>
+        <div class="step-info">
+          <span class="step-label">Add Your Gemini Key</span>
+          <span class="step-time">5 min</span>
+        </div>
+        <div class="step-checkbox">✔</div>
+      </li>
+      <li class="step-item" data-step="8">
+        <div class="step-num">8</div>
+        <div class="step-info">
+          <span class="step-label">Run It &amp; Show It Off</span>
+          <span class="step-time">10 min</span>
+        </div>
+        <div class="step-checkbox">✔</div>
+      </li>
+    </ul>
+  </nav>
+
+  <main class="content-container">
+    <div class="content-wrap">
+
+      <!-- Step 1 -->
+      <section class="step-section active" id="sec-1">
+        <h1 class="step-title">1. Introduction &amp; Set Up</h1>
+        <p>Welcome to <strong>{{EVENT_NAME}}</strong>! In the next 75 minutes, you are going to design, build, and deploy a real, working AI-powered web application using <strong>Antigravity</strong>, an agentic coding assistant.</p>
+
+        <h2>What You'll Build</h2>
+        <!-- TRACKS OPTIONAL: Replace the paragraph below for code-along events -->
+        <p>An AI-powered web application based on one of our tracks. The app runs in your browser, interfaces with Google's Gemini API, and is fully customizable. You direct the AI, and the AI writes the code.</p>
+
+        <h2>Install Antigravity</h2>
+        <p>Antigravity is the agentic companion that will do the heavy lifting. Install it on your machine first:</p>
+        <ol>
+          <li>Go to <a href="https://antigravity.google/download" target="_blank">https://antigravity.google/download</a> in your web browser.</li>
+          <li>Click the download button for your operating system (macOS, Windows, or Linux).</li>
+          <li>Run the installer and click through the prompts using the default settings.</li>
+        </ol>
+
+        <h2>Launch &amp; Sign In</h2>
+        <ol>
+          <li>Open the Antigravity application from your applications directory.</li>
+          <li>Click <strong>"Sign In"</strong> when prompted.</li>
+          <li>Use your Google account. (Tip: Use the same Google account you plan to use for Google AI Studio later on).</li>
+        </ol>
+
+        <div class="alert alert-checkpoint">
+          <div class="alert-title">Checkpoint</div>
+          <p>Antigravity is successfully installed, you are logged in, and the welcome screen is open.</p>
+        </div>
+      </section>
+
+      <!-- Step 2 -->
+      <section class="step-section" id="sec-2">
+        <h1 class="step-title">2. Install Tools &amp; Get the Code</h1>
+        <p>We need two tools installed — <strong>uv</strong> (runs Python apps) and <strong>git</strong> (downloads code) — plus the event repo cloned to your machine.</p>
+
+        <h2>⭐ Option A — Let Antigravity do everything <em style="font-size:.85rem;color:var(--cream-dim);font-style:normal;">(recommended for beginners)</em></h2>
+        <ol>
+          <li>On the Antigravity welcome screen, click <strong>"Open Folder"</strong>.</li>
+          <li>Create an empty scratch folder on your Desktop (e.g., <code>jam-setup</code>) and open it.</li>
+          <li>Select <strong>Gemini 3.5 Flash (Medium)</strong> from the model dropdown.</li>
+        </ol>
+
+        <span class="paste-label">📝 Paste this:</span>
+        <div class="code-container">
+          <button class="copy-btn">Copy</button>
+          <pre>Install uv and git on my computer if they're not already there.
+Don't install Node.js. Ask permission before each install command.
+
+Then clone this repo to my Desktop:
+https://github.com/{{ORGANIZER_GITHUB}}/{{REPO_SLUG}}.git</pre>
+        </div>
+
+        <div class="alert alert-checkpoint">
+          <div class="alert-title">✅ You're good to move on when...</div>
+          <p>Antigravity confirms <code>uv</code> and <code>git</code> are installed and the <code>{{REPO_SLUG}}</code> folder appears on your Desktop.</p>
+        </div>
+
+        <div class="alert alert-warning">
+          <div class="alert-title">🚨 If the install fails</div>
+          <p>Download manually and restart Antigravity:<br>
+          • <strong>uv:</strong> <a href="https://astral.sh/uv" target="_blank">astral.sh/uv</a><br>
+          • <strong>git:</strong> <a href="https://git-scm.com" target="_blank">git-scm.com</a></p>
+        </div>
+
+        <h2>Option B — I know the terminal</h2>
+        <div class="code-container">
+          <button class="copy-btn">Copy</button>
+          <pre>git clone https://github.com/{{ORGANIZER_GITHUB}}/{{REPO_SLUG}}.git</pre>
+        </div>
+        <p>Then install uv from <a href="https://astral.sh/uv" target="_blank">astral.sh/uv</a> if you don't already have it.</p>
+      </section>
+
+      <!-- Step 3 — TRACKS OPTIONAL -->
+      <!-- For code-along events with no tracks: replace this entire section with a "Start Your Project" step -->
+      <section class="step-section" id="sec-3">
+        <h1 class="step-title">3. Pick Your Track</h1>
+        <p>The repo is on your machine. Pick the track you want to build today, then open just that folder.</p>
+
+        <!-- TRACKS OPTIONAL: Replace cards below with your event's actual tracks.
+             Remove this grid entirely for code-along events. -->
+        <div class="track-select-grid" id="track-grid">
+          <!-- Track cards are generated by JavaScript from trackData below.
+               To add/remove tracks, edit the trackData object in the <script> section. -->
+        </div>
+
+        <!-- "Bring Your Own" spec builder — keep for any event that allows open building -->
+        <div id="custom-spec-builder" style="display:none;">
+          <div class="alert alert-tip" style="margin-bottom:16px;">
+            <div class="alert-title">🌟 Build Your Own Spec</div>
+            <p>Answer these three questions. We'll generate your Antigravity prompt from your answers.</p>
+          </div>
+          <div class="spec-field">
+            <label class="paste-label" for="spec-who">Who is this for?</label>
+            <input type="text" id="spec-who" class="spec-input" placeholder="e.g. Elderly residents on the east side who don't have reliable transit" />
+          </div>
+          <div class="spec-field">
+            <label class="paste-label" for="spec-input-field">What's the one thing they type in or upload?</label>
+            <input type="text" id="spec-input-field" class="spec-input" placeholder="e.g. Their address and a description of the problem" />
+          </div>
+          <div class="spec-field">
+            <label class="paste-label" for="spec-moment">What's the magic moment when it works?</label>
+            <input type="text" id="spec-moment" class="spec-input" placeholder="e.g. They see a plain-English action plan with real local resources" />
+          </div>
+          <button class="spec-generate-btn" id="spec-generate-btn">Generate My Prompt →</button>
+          <div id="custom-prompt-output" style="display:none; margin-top:20px;">
+            <span class="paste-label">📝 Paste this in Antigravity:</span>
+            <div class="code-container">
+              <button class="copy-btn">Copy</button>
+              <pre id="custom-prompt-text"></pre>
+            </div>
+          </div>
+        </div>
+
+        <div class="alert alert-tip" id="active-track-tip">
+          <div class="alert-title">Active Track</div>
+          <p>You have selected: <strong class="dyn-track-name">—</strong>. Folder paths and prompt examples throughout this guide are now configured for your track.</p>
+        </div>
+
+        <h2 id="get-your-track">Get Your Track</h2>
+
+        <h3>⭐ Option A — Antigravity</h3>
+        <span class="paste-label">📝 Paste this:</span>
+        <div class="code-container">
+          <button class="copy-btn">Copy</button>
+          <pre class="dyn-ag-prompt">Clone https://github.com/{{ORGANIZER_GITHUB}}/{{REPO_SLUG}}.git to my Desktop if it isn't there already, then open the tracks/{{TRACK_1_NAME}} folder as my workspace. Confirm when it's ready.</pre>
+        </div>
+
+        <h3>Option B — Terminal</h3>
+        <div class="code-container">
+          <button class="copy-btn">Copy</button>
+          <pre class="dyn-cd-path">cd ~/Desktop/{{REPO_SLUG}}/tracks/{{TRACK_1_NAME}}</pre>
+        </div>
+        <p>Then open that folder in Antigravity: <strong>File → Open Folder</strong>.</p>
+
+        <div class="alert alert-checkpoint">
+          <div class="alert-title">✅ You're good to move on when...</div>
+          <p>Antigravity is open to your track folder, you can see <code>SPEC.md</code> in the sidebar, and the AI gave you a plain-English summary of what you're building.</p>
+        </div>
+      </section>
+
+      <!-- Step 4 -->
+      <section class="step-section" id="sec-4">
+        <h1 class="step-title">4. The Spec Talk</h1>
+        <p>Before the AI writes a single line of code, you and the AI get on the same page about what you're building. This takes about 5 minutes and saves a lot of backtracking later.</p>
+
+        <h2>Open the Chat</h2>
+        <p>Click inside the chat area at the bottom of Antigravity (<code>Ctrl+L</code> on Windows/Linux, <code>Cmd+L</code> on Mac). Make sure <strong>Gemini 3.5 Flash (Medium)</strong> is selected. Then paste this:</p>
+
+        <span class="paste-label">📝 Paste this:</span>
+        <div class="code-container">
+          <button class="copy-btn">Copy</button>
+          <pre>Read @SPEC.md and ask me 3 short questions before we start building:
+1. What's the one thing a user types in or uploads?
+2. What should they see when it works — the magic moment?
+3. What are we NOT building today to keep it simple?
+
+Don't write any code yet. Just ask the questions and wait for my answers.</pre>
+        </div>
+
+        <div class="alert alert-tip">
+          <div class="alert-title">💡 Tip — Narrow scope = faster ship</div>
+          <p>The tighter your answers, the faster you'll have a working app. Today's goal is something real that runs.</p>
+        </div>
+
+        <div class="alert alert-checkpoint">
+          <div class="alert-title">✅ You're good to move on when...</div>
+          <p>The AI has asked its three questions and you've answered them. No code written yet.</p>
+        </div>
+      </section>
+
+      <!-- Step 5 -->
+      <section class="step-section" id="sec-5">
+        <h1 class="step-title">5. Generate 3 Design Docs</h1>
+        <p>Have the AI plan the entire app before it writes code. These three files are your blueprint.</p>
+
+        <ul>
+          <li>📋 <strong>product.md</strong> — what the app does and who it's for</li>
+          <li>🎨 <strong>ui.md</strong> — what it looks like and how users interact with it</li>
+          <li>⚙️ <strong>engineering.md</strong> — the tech stack, file structure, and test plan</li>
+        </ul>
+
+        <h2>Switch Models</h2>
+        <p>Switch to <strong>Gemini 3.1 Pro (Low)</strong> in the model dropdown for the planning step.</p>
+
+        <span class="paste-label">📝 Paste this:</span>
+        <div class="code-container">
+          <button class="copy-btn">Copy</button>
+          <pre>Based on our conversation and @SPEC.md, create three planning files in this folder:
+
+1. product.md — what the app does, who it's for, and the key features
+2. ui.md — how the interface looks: layout, colors, fonts, and user flow
+3. engineering.md — the tech stack, file structure, and a testing plan
+   (use Python + FastAPI for the backend, plain HTML/CSS/JS for the frontend)
+
+Save each file before moving to the next. After all three are saved,
+give me a quick summary of what's in each one.</pre>
+        </div>
+
+        <div class="alert alert-checkpoint">
+          <div class="alert-title">✅ You're good to move on when...</div>
+          <p>All three files — <code>product.md</code>, <code>ui.md</code>, <code>engineering.md</code> — exist and look like a solid plan.</p>
+        </div>
+      </section>
+
+      <!-- Step 6 -->
+      <section class="step-section" id="sec-6">
+        <h1 class="step-title">6. Build &amp; Test</h1>
+        <p>The AI reads your three docs and builds the whole app. Your job is to click <strong>Allow</strong> when it asks permission to run commands.</p>
+
+        <h2>Switch to the Thinking Model</h2>
+        <p>Switch to <strong>Gemini 3.1 Pro (High)</strong> in the model dropdown.</p>
+
+        <span class="paste-label">📝 Paste this:</span>
+        <div class="code-container">
+          <button class="copy-btn">Copy</button>
+          <pre>Build the full app based on @product.md, @ui.md, and @engineering.md.
+
+- Use Python + FastAPI for the backend, plain HTML/CSS/JS for the frontend
+- Use uv for package management (not pip directly)
+- Read the Gemini API key from a .env file as GEMINI_API_KEY
+- Do NOT start any servers yet — I'll do that in the next step
+
+After the code is written:
+- Write tests for the main functions using pytest
+- Mock the Gemini API in tests so they run without a real key
+- Run the tests and fix any failures (try up to 3 times)
+- Tell me when everything passes or what's still broken</pre>
+        </div>
+
+        <div class="alert alert-checkpoint">
+          <div class="alert-title">✅ You're good to move on when...</div>
+          <p>The AI reports <code>All tests passed</code> and you can see new files in Agent Manager.</p>
+        </div>
+
+        <div class="alert alert-warning">
+          <div class="alert-title">🚨 If something goes wrong</div>
+          <p>Paste this: <em>"Stop and explain what's broken. What do I need to change in engineering.md to fix this?"</em> — update the doc, then ask it to try again.</p>
+        </div>
+      </section>
+
+      <!-- Step 7 -->
+      <section class="step-section" id="sec-7">
+        <h1 class="step-title">7. Add Your Gemini Key</h1>
+        <p>The app is built but running on a fake AI connection. Now plug in your real Gemini API key.</p>
+
+        <h2>Get Your Key</h2>
+        <ol>
+          <li>Open <a href="https://aistudio.google.com/app/apikey" target="_blank">aistudio.google.com/app/apikey</a>.</li>
+          <li>Sign in with your Google account.</li>
+          <li>Click <strong>"Create API key"</strong> — it starts with <code>AIzaSy...</code></li>
+        </ol>
+
+        <span class="paste-label">📝 Paste this (swap in your real key):</span>
+        <div class="code-container">
+          <button class="copy-btn">Copy</button>
+          <pre>Create a .env file in the project root with this content:
+GEMINI_API_KEY=&lt;PASTE_YOUR_KEY_HERE&gt;
+
+Also:
+- Make sure .env is listed in .gitignore
+- Confirm the app reads GEMINI_API_KEY at startup using os.getenv()
+- Show me the .env file with the key hidden (first 6 characters + ...)</pre>
+        </div>
+
+        <div class="alert alert-warning">
+          <div class="alert-title">🔑 Keep your key private</div>
+          <p>Never paste your API key into the chat or commit it to GitHub. It always lives in <code>.env</code>.</p>
+        </div>
+
+        <div class="alert alert-checkpoint">
+          <div class="alert-title">✅ You're good to move on when...</div>
+          <p>The AI confirms your <code>.env</code> is set up with the key hidden.</p>
+        </div>
+      </section>
+
+      <!-- Step 8 -->
+      <section class="step-section" id="sec-8">
+        <h1 class="step-title">8. Run It &amp; Show It Off 🎉</h1>
+        <p>Everything is built and wired up. Time to see your app live in the browser!</p>
+
+        <span class="paste-label">📝 Paste this:</span>
+        <div class="code-container">
+          <button class="copy-btn">Copy</button>
+          <pre>Start the dev server so I can preview the app in my browser.
+Tell me the URL when it's ready. I'll click Allow on the permission prompt.</pre>
+        </div>
+
+        <div class="alert alert-warning">
+          <div class="alert-title">🚨 If the app won't start</div>
+          <p>Paste: <em>"The server didn't start. Show me the full error and fix it."</em></p>
+        </div>
+
+        <span class="paste-label">📝 Lock in your work:</span>
+        <div class="code-container">
+          <button class="copy-btn">Copy</button>
+          <pre>The app works! Create a README.md in the project root that explains:
+- What this app does in plain English
+- How to install it on a new machine (uv sync, etc.)
+- How to run the dev server
+- Where to find the design docs (product.md, ui.md, engineering.md)
+
+Keep it short and friendly. Save it as README.md.</pre>
+        </div>
+
+        <div class="alert alert-tip alert-checkpoint">
+          <div class="alert-title">🎉 You shipped something real today.</div>
+          <p>You went from an empty folder to a working AI app. Share your link or a screenshot with the facilitator — we'll demo standout builds for the whole room!</p>
+        </div>
+      </section>
+
+    </div>
+  </main>
+</div>
+
+<footer class="footer-nav">
+  <button class="nav-btn" id="prev-btn" disabled>
+    <svg width="18" height="18" style="vertical-align: middle;"><use href="#icon-chevron-left"/></svg>
+    Back
+  </button>
+  <button class="nav-btn primary" id="next-btn">
+    Next
+    <svg width="18" height="18" style="vertical-align: middle;"><use href="#icon-chevron"/></svg>
+  </button>
+</footer>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+
+    // -----------------------------------------------------------------------
+    // TRACKS OPTIONAL — Edit this object to add/remove/rename tracks.
+    // For code-along events with no tracks, set trackData to {} and the
+    // track-select-grid will not render. Step 3 content should also be
+    // updated manually for those events.
+    // -----------------------------------------------------------------------
+    const trackData = {
+      // Example structure — replace with real track data:
+      // 1: {
+      //   name: "{{TRACK_1_NAME}}",
+      //   emoji: "🛍️",
+      //   folder: "tracks/{{TRACK_1_NAME}}",
+      //   desc: "{{TRACK_1_DESC}}",
+      //   color: "var(--gold)",
+      //   agPrompt: "Clone https://github.com/{{ORGANIZER_GITHUB}}/{{REPO_SLUG}}.git to my Desktop if it isn't there already, then open the tracks/{{TRACK_1_NAME}} folder as my workspace. Confirm when it's ready.",
+      //   cdPath: "cd ~/Desktop/{{REPO_SLUG}}/tracks/{{TRACK_1_NAME}}",
+      //   input: "Example input for this track"
+      // },
+      // Add more tracks following the same pattern...
+      // The last entry (highest number) should be the "Your Idea" open track:
+      // 99: {
+      //   name: "Your Idea",
+      //   emoji: "🌟",
+      //   folder: "my-project",
+      //   desc: "Bring your own. Got a community problem that doesn't fit a track? Build it your way.",
+      //   color: "var(--cream-dim)",
+      //   agPrompt: "",
+      //   cdPath: "",
+      //   input: ""
+      // }
+    };
+    // -----------------------------------------------------------------------
+
+    const steps = [
+      { id: 1, duration: 5,  el: document.getElementById('sec-1') },
+      { id: 2, duration: 10, el: document.getElementById('sec-2') },
+      { id: 3, duration: 5,  el: document.getElementById('sec-3') },
+      { id: 4, duration: 10, el: document.getElementById('sec-4') },
+      { id: 5, duration: 10, el: document.getElementById('sec-5') },
+      { id: 6, duration: 20, el: document.getElementById('sec-6') },
+      { id: 7, duration: 5,  el: document.getElementById('sec-7') },
+      { id: 8, duration: 10, el: document.getElementById('sec-8') }
+    ];
+
+    const totalSteps = steps.length;
+    let currentStep = 1;
+
+    const sidebar = document.getElementById('sidebar-panel');
+    const menuBtn = document.getElementById('menu-btn');
+    const prevBtn = document.getElementById('prev-btn');
+    const nextBtn = document.getElementById('next-btn');
+    const timeBadge = document.getElementById('time-badge');
+    const progressIndicator = document.getElementById('progress-indicator');
+    const stepItems = document.querySelectorAll('.step-item');
+    const contentContainer = document.querySelector('.content-container');
+
+    function updateUI(stepIndex) {
+      if (stepIndex < 1 || stepIndex > totalSteps) return;
+      currentStep = stepIndex;
+
+      steps.forEach(s => {
+        s.el.classList.toggle('active', s.id === currentStep);
+      });
+
+      stepItems.forEach((item, idx) => {
+        const n = idx + 1;
+        item.classList.toggle('active', n === currentStep);
+        item.classList.toggle('completed', n < currentStep);
+      });
+
+      let remaining = 0;
+      for (let i = currentStep - 1; i < totalSteps; i++) remaining += steps[i].duration;
+      timeBadge.textContent = `${remaining} min left`;
+
+      progressIndicator.style.width = `${((currentStep - 1) / (totalSteps - 1)) * 100}%`;
+      prevBtn.disabled = currentStep === 1;
+      nextBtn.innerHTML = currentStep === totalSteps
+        ? `Done <svg width="18" height="18" style="vertical-align:middle;"><use href="#icon-chevron"/></svg>`
+        : `Next <svg width="18" height="18" style="vertical-align:middle;"><use href="#icon-chevron"/></svg>`;
+
+      contentContainer.scrollTop = 0;
+      window.location.hash = `step-${currentStep}`;
+      sidebar.classList.remove('open');
+    }
+
+    function checkHash() {
+      const match = window.location.hash.match(/^#step-(\d+)$/);
+      updateUI(match ? Math.min(Math.max(parseInt(match[1], 10), 1), totalSteps) : 1);
+    }
+
+    window.addEventListener('hashchange', checkHash);
+    stepItems.forEach(item => {
+      item.addEventListener('click', () => updateUI(parseInt(item.getAttribute('data-step'), 10)));
+    });
+    prevBtn.addEventListener('click', () => { if (currentStep > 1) updateUI(currentStep - 1); });
+    nextBtn.addEventListener('click', () => {
+      if (currentStep < totalSteps) updateUI(currentStep + 1);
+      else window.location.href = 'index.html';
+    });
+    menuBtn.addEventListener('click', e => { e.stopPropagation(); sidebar.classList.toggle('open'); });
+    document.addEventListener('click', e => {
+      if (!sidebar.contains(e.target) && e.target !== menuBtn) sidebar.classList.remove('open');
+    });
+
+    document.querySelectorAll('.copy-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        navigator.clipboard.writeText(btn.nextElementSibling.textContent).then(() => {
+          btn.textContent = 'Copied!';
+          btn.style.background = 'var(--green)';
+          btn.style.color = '#000';
+          setTimeout(() => {
+            btn.textContent = 'Copy';
+            btn.style.background = 'rgba(244,236,220,0.05)';
+            btn.style.color = 'var(--cream-dim)';
+          }, 2000);
+        });
+      });
+    });
+
+    // Render track cards from trackData
+    const grid = document.getElementById('track-grid');
+    const trackIds = Object.keys(trackData).map(Number);
+    if (grid && trackIds.length > 0) {
+      trackIds.forEach(id => {
+        const t = trackData[id];
+        const card = document.createElement('div');
+        card.className = 'track-select-card';
+        card.setAttribute('data-track-id', id);
+        card.style.setProperty('--c', t.color);
+        card.innerHTML = `
+          <div class="tsc-header">
+            <span class="tsc-emoji">${t.emoji}</span>
+            <h3 class="tsc-title">${t.name}</h3>
+          </div>
+          <p class="tsc-desc">${t.desc}</p>
+          <button class="tsc-btn">Select Track</button>`;
+        card.addEventListener('click', () => selectTrack(id));
+        grid.appendChild(card);
+      });
+    } else if (grid) {
+      grid.style.display = 'none';
+      document.getElementById('active-track-tip').style.display = 'none';
+      document.getElementById('get-your-track').style.display = 'none';
+    }
+
+    function updateTrackContent(id) {
+      const t = trackData[id];
+      if (!t) return;
+      document.querySelectorAll('.dyn-track-name').forEach(el => el.textContent = t.name);
+      document.querySelectorAll('.dyn-ag-prompt').forEach(el => el.textContent = t.agPrompt);
+      document.querySelectorAll('.dyn-cd-path').forEach(el => el.textContent = t.cdPath);
+    }
+
+    function selectTrack(id) {
+      localStorage.setItem('selectedTrack', id);
+      document.querySelectorAll('.track-select-card').forEach(card => {
+        const isSelected = parseInt(card.getAttribute('data-track-id'), 10) === id;
+        card.classList.toggle('selected', isSelected);
+        const btn = card.querySelector('.tsc-btn');
+        if (btn) btn.textContent = isSelected ? 'Selected' : 'Select Track';
+      });
+      updateTrackContent(id);
+      const isCustom = id === Math.max(...trackIds);
+      document.getElementById('custom-spec-builder').style.display = isCustom ? 'block' : 'none';
+    }
+
+    const savedTrack = parseInt(localStorage.getItem('selectedTrack'), 10);
+    if (trackIds.includes(savedTrack)) selectTrack(savedTrack);
+    else if (trackIds.length > 0) selectTrack(trackIds[0]);
+
+    // Spec builder for "Your Idea" track
+    const specBtn = document.getElementById('spec-generate-btn');
+    if (specBtn) {
+      specBtn.addEventListener('click', () => {
+        const who = document.getElementById('spec-who').value.trim();
+        const input = document.getElementById('spec-input-field').value.trim();
+        const moment = document.getElementById('spec-moment').value.trim();
+        if (!who || !input || !moment) { alert('Please fill in all three fields first.'); return; }
+        const prompt = `I'm building a custom app at {{EVENT_NAME}}. Here's my spec:\n\n- Who it's for: ${who}\n- What they type in or upload: ${input}\n- The magic moment when it works: ${moment}\n\nCreate a SPEC.md file from this spec. Then ask me 3 short clarifying questions before we write any code.`;
+        document.getElementById('custom-prompt-text').textContent = prompt;
+        document.getElementById('custom-prompt-output').style.display = 'block';
+      });
+    }
+
+    checkHash();
+  });
+</script>
+</body>
+</html>

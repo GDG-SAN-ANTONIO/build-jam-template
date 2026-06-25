@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>{{EVENT_NAME}} · Resources</title>
+<meta name="description" content="Data sources and tools for {{EVENT_NAME}}." />
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&family=Public+Sans:wght@400;500;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+
+<style>
+  :root {
+    --ink: #0A0A0A; --ink-2: #141414; --cream: #F4ECDC; --cream-dim: #cdc2ad;
+    --accent: #CE1126; --accent-2: #009A44; --gold: #E8A33D; --line: rgba(244,236,220,.12);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--ink); color: var(--cream);
+    font-family: "Public Sans", system-ui, sans-serif; font-size: 16px; line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+  a { color: var(--accent); text-decoration: none; transition: 0.2s; }
+  a:hover { color: var(--cream); }
+
+  nav {
+    position: sticky; top: 0; z-index: 100;
+    background: rgba(10,10,10,0.85); backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--line);
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 32px; height: 60px;
+  }
+  .nav-brand { font-family: "Space Mono", monospace; font-size: 0.85rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--cream-dim); }
+  .nav-links { display: flex; gap: 24px; align-items: center; }
+  .nav-links a { font-family: "Space Mono", monospace; font-size: 0.78rem; color: var(--cream-dim); border-bottom: none; }
+  .nav-links a:hover { color: var(--cream); }
+
+  .page-header { padding: 64px 32px 48px; max-width: 860px; margin: 0 auto; }
+  .page-eyebrow { font-family: "Space Mono", monospace; font-size: 0.78rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--gold); margin-bottom: 16px; }
+  .page-title { font-family: "Bricolage Grotesque", sans-serif; font-weight: 800; font-size: clamp(1.8rem, 3vw, 2.8rem); letter-spacing: -0.02em; margin-bottom: 16px; }
+  .page-desc { color: var(--cream-dim); font-size: 1rem; max-width: 560px; line-height: 1.7; }
+
+  .warning-banner {
+    max-width: 860px; margin: 0 auto 32px; padding: 0 32px;
+  }
+  .warning-banner .alert {
+    background: rgba(206,17,38,0.06); border: 1px solid var(--line); border-left: 4px solid var(--accent);
+    border-radius: 12px; padding: 20px;
+  }
+  .alert-title { font-family: "Space Mono", monospace; font-size: 0.82rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--accent); margin-bottom: 8px; }
+  .alert p { font-size: 0.92rem; color: var(--cream-dim); line-height: 1.6; }
+
+  .resources-body { max-width: 860px; margin: 0 auto; padding: 0 32px 80px; }
+
+  /* Foundational resources — always shown */
+  .resource-section { margin-bottom: 56px; }
+  .rs-header { margin-bottom: 24px; padding-bottom: 16px; border-bottom: 1px solid var(--line); }
+  .rs-tag { font-family: "Space Mono", monospace; font-size: 0.72rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--gold); margin-bottom: 8px; }
+  .rs-title { font-family: "Bricolage Grotesque", sans-serif; font-size: 1.4rem; font-weight: 800; letter-spacing: -0.01em; }
+  .rs-desc { color: var(--cream-dim); font-size: 0.9rem; margin-top: 6px; }
+
+  .resource-list { display: flex; flex-direction: column; gap: 12px; }
+  .resource-item {
+    background: var(--ink-2); border: 1px solid var(--line); border-radius: 12px;
+    padding: 18px 20px; display: flex; flex-direction: column; gap: 4px;
+    transition: border-color 0.2s;
+  }
+  .resource-item:hover { border-color: rgba(244,236,220,0.2); }
+  .resource-name { font-weight: 600; font-size: 0.95rem; }
+  .resource-desc { font-size: 0.85rem; color: var(--cream-dim); line-height: 1.5; }
+  .resource-link { font-family: "Space Mono", monospace; font-size: 0.75rem; color: var(--accent-2); margin-top: 4px; }
+  .resource-link:hover { color: var(--cream); }
+
+  footer {
+    border-top: 1px solid var(--line); padding: 40px 32px;
+    display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px;
+  }
+  .footer-brand { font-family: "Space Mono", monospace; font-size: 0.78rem; color: var(--cream-dim); }
+  .footer-links { display: flex; gap: 20px; }
+  .footer-links a { font-family: "Space Mono", monospace; font-size: 0.78rem; color: var(--cream-dim); border-bottom: none; }
+  .footer-links a:hover { color: var(--cream); }
+
+  @media (max-width: 640px) {
+    nav { padding: 0 16px; }
+    .page-header, .warning-banner, .resources-body { padding-left: 16px; padding-right: 16px; }
+    footer { padding: 32px 16px; flex-direction: column; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <span class="nav-brand">{{ORGANIZER_NAME}}</span>
+  <div class="nav-links">
+    <!-- TALK OPTIONAL: Remove the "Talk" link if no speaker talk -->
+    <a href="talk.html">Talk</a>
+    <a href="index.html">Home</a>
+    <a href="codelab.html">Codelab</a>
+    <a href="https://github.com/{{ORGANIZER_GITHUB}}/{{REPO_SLUG}}" target="_blank">GitHub ↗</a>
+  </div>
+</nav>
+
+<div class="page-header">
+  <p class="page-eyebrow">{{EVENT_NAME}}</p>
+  <h1 class="page-title">Data &amp; Resources</h1>
+  <p class="page-desc">Curated datasets and tools to help you build something grounded in real data.</p>
+</div>
+
+<div class="warning-banner">
+  <div class="alert">
+    <div class="alert-title">⚠️ Verify everything</div>
+    <p>Treat every AI output as a draft to verify — especially grants, coordinates, and any official-looking claim. These resources are starting points, not ground truth.</p>
+  </div>
+</div>
+
+<div class="resources-body">
+
+  <!-- Foundational resources — always include this section -->
+  <div class="resource-section">
+    <div class="rs-header">
+      <p class="rs-tag">All Tracks</p>
+      <h2 class="rs-title">Foundational Resources</h2>
+      <p class="rs-desc">Useful for any project at this event.</p>
+    </div>
+    <div class="resource-list">
+      <!-- Add/remove resource items as needed for your event's location/context -->
+      <div class="resource-item">
+        <span class="resource-name">Google AI Studio</span>
+        <span class="resource-desc">Get your free Gemini API key and explore model capabilities.</span>
+        <a class="resource-link" href="https://aistudio.google.com" target="_blank">aistudio.google.com →</a>
+      </div>
+      <div class="resource-item">
+        <span class="resource-name">Gemini API Docs</span>
+        <span class="resource-desc">Reference docs for the Gemini API used in all track starters.</span>
+        <a class="resource-link" href="https://ai.google.dev/docs" target="_blank">ai.google.dev/docs →</a>
+      </div>
+      <!-- Add event-specific foundational data sources here (e.g. city open data portal) -->
+    </div>
+  </div>
+
+  <!-- TRACKS OPTIONAL: Remove all track-specific sections below for code-along events -->
+  <!-- Repeat the .resource-section block below for each track in your event. -->
+
+  <!-- Track 1 resource section — duplicate and rename for each track -->
+  <div class="resource-section">
+    <div class="rs-header">
+      <p class="rs-tag">{{TRACK_1_NAME}}</p>
+      <h2 class="rs-title">{{TRACK_1_NAME}} Resources</h2>
+      <p class="rs-desc">{{TRACK_1_DESC}}</p>
+    </div>
+    <div class="resource-list">
+      <!-- Add resource items for this track -->
+      <div class="resource-item">
+        <span class="resource-name">Resource Name</span>
+        <span class="resource-desc">Description of this resource and why it's useful for this track.</span>
+        <a class="resource-link" href="#" target="_blank">link →</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Add more track sections following the same pattern... -->
+
+  <!-- end tracks section -->
+
+</div>
+
+<footer>
+  <span class="footer-brand">{{ORGANIZER_NAME}} · {{EVENT_DATE}} · {{EVENT_LOCATION}}</span>
+  <div class="footer-links">
+    <a href="index.html">Home</a>
+    <a href="codelab.html">Codelab</a>
+    <a href="https://github.com/{{ORGANIZER_GITHUB}}/{{REPO_SLUG}}" target="_blank">GitHub</a>
+  </div>
+</footer>
+
+</body>
+</html>

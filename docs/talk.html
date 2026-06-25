@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<!-- OPTIONAL FILE: Only include this page when the event has a speaker talk.
+     Delete this file entirely for events without a talk component.
+     Also remove the "Talk" nav link from index.html and resources.html. -->
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>{{EVENT_NAME}} · The Talk</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Public+Sans:wght@400;500;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+
+<style>
+  :root {
+    --ink: #0A0A0A; --ink-2: #141414; --cream: #F4ECDC; --cream-dim: #cdc2ad;
+    --accent: #CE1126; --accent-2: #009A44; --gold: #E8A33D; --line: rgba(244,236,220,.12);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { height: 100%; }
+  body {
+    background: #000; display: flex; flex-direction: column;
+    font-family: "Public Sans", system-ui, sans-serif; -webkit-font-smoothing: antialiased;
+    color: var(--cream);
+  }
+
+  /* ---- Slide stage: 16:9 scaling ---- */
+  .stage-wrapper {
+    flex: 1; display: flex; align-items: center; justify-content: center;
+    overflow: hidden; position: relative;
+  }
+  .slide {
+    position: relative; width: 100vw; max-width: 177.78vh;
+    height: 56.25vw; max-height: 100vh;
+    background: var(--ink); overflow: hidden;
+  }
+  .slide-glow::before {
+    content: ""; position: absolute; top: -20%; right: -8%; width: 46%; height: 90%;
+    border-radius: 50%; background: radial-gradient(circle, rgba(206,17,38,.2), transparent 62%);
+  }
+  .slide-glow::after {
+    content: ""; position: absolute; bottom: -26%; left: -8%; width: 40%; height: 80%;
+    border-radius: 50%; background: radial-gradient(circle, rgba(0,154,68,.15), transparent 64%);
+  }
+
+  /* Slide content area */
+  .slide-content {
+    position: relative; z-index: 2;
+    height: 100%; display: flex; flex-direction: column;
+    justify-content: center; padding: 6% 8%;
+  }
+  .slide-eyebrow {
+    font-family: "Space Mono", monospace; font-size: 1.1vw; letter-spacing: 0.2em;
+    text-transform: uppercase; color: var(--gold); margin-bottom: 1.5vw;
+  }
+  .slide-title {
+    font-family: "Bricolage Grotesque", sans-serif; font-weight: 800;
+    font-size: 5.5vw; line-height: 1.0; letter-spacing: -0.025em; margin-bottom: 2vw;
+  }
+  .slide-title span { color: var(--accent); }
+  .slide-body { font-size: 1.8vw; color: var(--cream-dim); line-height: 1.6; max-width: 65%; }
+  .slide-body strong { color: var(--cream); }
+  .slide-foot {
+    position: absolute; bottom: 4%; left: 8%; right: 8%; z-index: 2;
+    display: flex; justify-content: space-between; align-items: center;
+    font-family: "Space Mono", monospace; font-size: 0.9vw; color: var(--cream-dim);
+  }
+
+  /* Principle / list slides */
+  .principles-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 2vw;
+    margin-top: 2vw;
+  }
+  .principle-card {
+    background: var(--ink-2); border: 1px solid var(--line); border-radius: 1vw;
+    padding: 2vw; border-left: 0.4vw solid var(--accent);
+  }
+  .principle-num { font-family: "Space Mono", monospace; font-size: 0.9vw; color: var(--gold); margin-bottom: 0.6vw; }
+  .principle-title { font-family: "Bricolage Grotesque", sans-serif; font-size: 1.6vw; font-weight: 800; margin-bottom: 0.5vw; }
+  .principle-desc { font-size: 1.1vw; color: var(--cream-dim); line-height: 1.5; }
+
+  /* Progress dots */
+  .progress-dots {
+    display: flex; gap: 8px; justify-content: center; padding: 12px 0;
+    background: var(--ink-2); border-top: 1px solid var(--line); flex-shrink: 0;
+  }
+  .dot {
+    width: 8px; height: 8px; border-radius: 50%; background: var(--line);
+    cursor: pointer; transition: background 0.2s; border: none;
+  }
+  .dot.active { background: var(--accent); }
+
+  /* Nav overlay buttons */
+  .slide-nav {
+    position: absolute; top: 50%; transform: translateY(-50%); z-index: 10;
+    background: rgba(20,20,20,0.6); border: 1px solid var(--line); border-radius: 50%;
+    width: 3vw; height: 3vw; min-width: 32px; min-height: 32px;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; color: var(--cream-dim); transition: 0.2s;
+    font-size: 1.4vw;
+  }
+  .slide-nav:hover { background: var(--cream); color: var(--ink); }
+  .slide-nav.prev { left: 1.5%; }
+  .slide-nav.next { right: 1.5%; }
+</style>
+</head>
+<body>
+
+<div class="stage-wrapper">
+  <div class="slide slide-glow" id="slide-stage">
+
+    <!-- ================================================================
+         SLIDE CONTENT
+         Add/remove/edit <div class="slide-panel"> blocks.
+         Only the active panel is shown; JS handles transitions.
+         ================================================================ -->
+
+    <!-- Slide 1: Title -->
+    <div class="slide-panel slide-content" data-slide="1">
+      <p class="slide-eyebrow">{{ORGANIZER_NAME}} · {{EVENT_NAME}}</p>
+      <h1 class="slide-title">{{EVENT_NAME}}<br><span>{{EVENT_TAGLINE}}</span></h1>
+      <p class="slide-body">{{EVENT_DATE}} · {{EVENT_LOCATION}}</p>
+      <div class="slide-foot">
+        <span>{{ORGANIZER_NAME}}</span>
+        <span>{{ORGANIZER_GITHUB}}.github.io/{{REPO_SLUG}}</span>
+      </div>
+    </div>
+
+    <!-- Slide 2: What we're doing today -->
+    <!-- TRACKS OPTIONAL: Replace track-specific language for code-along events -->
+    <div class="slide-panel slide-content" data-slide="2" style="display:none;">
+      <p class="slide-eyebrow">Tonight</p>
+      <h1 class="slide-title">Two hours.<br><span>One working app.</span></h1>
+      <p class="slide-body">
+        Pick a track. Open the kit. Ship a real AI prototype.<br><br>
+        <!-- For code-along events replace above with: -->
+        <!-- We'll build one app together, step by step. No track selection needed. -->
+      </p>
+      <div class="slide-foot">
+        <span>{{ORGANIZER_NAME}} · {{EVENT_NAME}}</span>
+        <span></span>
+      </div>
+    </div>
+
+    <!-- Slide 3: Core principles — edit or remove for your talk -->
+    <div class="slide-panel slide-content" data-slide="3" style="display:none;">
+      <p class="slide-eyebrow">How we build</p>
+      <h1 class="slide-title" style="font-size:3.5vw;">Six principles</h1>
+      <div class="principles-grid">
+        <!-- Edit principle text to match your talk content -->
+        <div class="principle-card">
+          <div class="principle-num">01</div>
+          <div class="principle-title">Design With, Not For</div>
+          <div class="principle-desc">Involve the people you're building for.</div>
+        </div>
+        <div class="principle-card">
+          <div class="principle-num">02</div>
+          <div class="principle-title">Default to Open</div>
+          <div class="principle-desc">Open source, open data, open process.</div>
+        </div>
+        <div class="principle-card">
+          <div class="principle-num">03</div>
+          <div class="principle-title">Data Integrity First</div>
+          <div class="principle-desc">Reliable information over beautiful output.</div>
+        </div>
+        <div class="principle-card">
+          <div class="principle-num">04</div>
+          <div class="principle-title">Iterate for Impact</div>
+          <div class="principle-desc">Ship something focused. Expand later.</div>
+        </div>
+        <div class="principle-card">
+          <div class="principle-num">05</div>
+          <div class="principle-title">Measure Outcomes</div>
+          <div class="principle-desc">Track community benefit, not feature count.</div>
+        </div>
+        <div class="principle-card">
+          <div class="principle-num">06</div>
+          <div class="principle-title">Technology is a Tool</div>
+          <div class="principle-desc">Community need drives the stack, not the other way.</div>
+        </div>
+      </div>
+      <div class="slide-foot">
+        <span>{{ORGANIZER_NAME}} · {{EVENT_NAME}}</span>
+        <span></span>
+      </div>
+    </div>
+
+    <!-- Slide 4: Build principles -->
+    <div class="slide-panel slide-content" data-slide="4" style="display:none;">
+      <p class="slide-eyebrow">Working with AI</p>
+      <h1 class="slide-title" style="font-size:3.5vw;">Four build principles</h1>
+      <div class="principles-grid" style="grid-template-columns: repeat(2,1fr);">
+        <div class="principle-card" style="border-left-color: var(--accent-2);">
+          <div class="principle-num">01</div>
+          <div class="principle-title">Say What You Want Back</div>
+          <div class="principle-desc">Define the output structure before you start.</div>
+        </div>
+        <div class="principle-card" style="border-left-color: var(--accent-2);">
+          <div class="principle-num">02</div>
+          <div class="principle-title">Name What It Must Never Do</div>
+          <div class="principle-desc">Establish guardrails up front.</div>
+        </div>
+        <div class="principle-card" style="border-left-color: var(--accent-2);">
+          <div class="principle-num">03</div>
+          <div class="principle-title">Break It on Purpose</div>
+          <div class="principle-desc">Test edge cases before your users do.</div>
+        </div>
+        <div class="principle-card" style="border-left-color: var(--accent-2);">
+          <div class="principle-num">04</div>
+          <div class="principle-title">Own Your Setup</div>
+          <div class="principle-desc">Make sure anyone can run it from a fresh machine.</div>
+        </div>
+      </div>
+      <div class="slide-foot">
+        <span>{{ORGANIZER_NAME}} · {{EVENT_NAME}}</span>
+        <span></span>
+      </div>
+    </div>
+
+    <!-- Add more slides following the same .slide-panel pattern -->
+    <!-- Remember to set display:none on all slides except the first -->
+
+    <!-- Navigation arrows -->
+    <button class="slide-nav prev" id="prev-slide" aria-label="Previous slide">&#8592;</button>
+    <button class="slide-nav next" id="next-slide" aria-label="Next slide">&#8594;</button>
+
+  </div><!-- .slide -->
+</div><!-- .stage-wrapper -->
+
+<div class="progress-dots" id="dot-bar"></div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const panels = Array.from(document.querySelectorAll('.slide-panel'));
+    const dotBar = document.getElementById('dot-bar');
+    let current = 0;
+
+    // Build dots
+    panels.forEach((_, i) => {
+      const dot = document.createElement('button');
+      dot.className = 'dot' + (i === 0 ? ' active' : '');
+      dot.addEventListener('click', () => goTo(i));
+      dotBar.appendChild(dot);
+    });
+
+    function goTo(n) {
+      panels[current].style.display = 'none';
+      dotBar.children[current].classList.remove('active');
+      current = (n + panels.length) % panels.length;
+      panels[current].style.display = 'flex';
+      dotBar.children[current].classList.add('active');
+    }
+
+    document.getElementById('prev-slide').addEventListener('click', () => goTo(current - 1));
+    document.getElementById('next-slide').addEventListener('click', () => goTo(current + 1));
+
+    document.addEventListener('keydown', e => {
+      if (e.key === 'ArrowRight' || e.key === 'ArrowDown' || e.key === ' ') goTo(current + 1);
+      if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') goTo(current - 1);
+    });
+  });
+</script>
+</body>
+</html>

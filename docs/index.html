@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>{{EVENT_NAME}} · {{ORGANIZER_NAME}}</title>
+<meta name="description" content="{{EVENT_TAGLINE}}" />
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&family=Public+Sans:wght@400;500;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+
+<style>
+  :root {
+    --ink: #0A0A0A;
+    --ink-2: #141414;
+    --ink-3: #1c1c1c;
+    --cream: #F4ECDC;
+    --cream-dim: #cdc2ad;
+    --accent: #CE1126;   /* primary accent — swap for your event's color */
+    --accent-2: #009A44; /* secondary accent */
+    --gold: #E8A33D;
+    --line: rgba(244,236,220,.12);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--ink);
+    color: var(--cream);
+    font-family: "Public Sans", system-ui, sans-serif;
+    font-size: 16px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  a { color: var(--accent); text-decoration: none; transition: 0.2s; }
+  a:hover { color: var(--cream); }
+
+  /* ---- Nav ---- */
+  nav {
+    position: sticky; top: 0; z-index: 100;
+    background: rgba(10,10,10,0.85); backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--line);
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 32px; height: 60px;
+  }
+  .nav-brand {
+    font-family: "Space Mono", monospace; font-size: 0.85rem;
+    letter-spacing: 0.1em; text-transform: uppercase; color: var(--cream-dim);
+  }
+  .nav-links { display: flex; gap: 24px; align-items: center; }
+  .nav-links a {
+    font-family: "Space Mono", monospace; font-size: 0.78rem;
+    color: var(--cream-dim); border-bottom: none; padding: 4px 0;
+    letter-spacing: 0.05em;
+  }
+  .nav-links a:hover { color: var(--cream); }
+  /* TALK OPTIONAL: Remove the talk/slide links from nav if no speaker talk */
+
+  /* ---- Hero ---- */
+  .hero {
+    min-height: 80vh; display: flex; flex-direction: column;
+    justify-content: center; padding: 80px 32px;
+    position: relative; overflow: hidden;
+  }
+  .hero::before {
+    content: ""; position: absolute; top: -20%; right: -10%; width: 50%; height: 100%;
+    border-radius: 50%; background: radial-gradient(circle, rgba(206,17,38,.15), transparent 60%);
+    pointer-events: none;
+  }
+  .hero::after {
+    content: ""; position: absolute; bottom: -20%; left: -10%; width: 40%; height: 80%;
+    border-radius: 50%; background: radial-gradient(circle, rgba(0,154,68,.1), transparent 60%);
+    pointer-events: none;
+  }
+  .hero-inner { max-width: 900px; position: relative; z-index: 1; }
+  .hero-eyebrow {
+    font-family: "Space Mono", monospace; font-size: 0.85rem;
+    letter-spacing: 0.2em; text-transform: uppercase; color: var(--gold);
+    margin-bottom: 24px;
+  }
+  .hero-title {
+    font-family: "Bricolage Grotesque", sans-serif; font-weight: 800;
+    font-size: clamp(2.8rem, 6vw, 5rem); line-height: 1.0; letter-spacing: -0.03em;
+    margin-bottom: 28px;
+  }
+  .hero-title span { color: var(--accent); }
+  .hero-desc {
+    font-size: 1.15rem; color: var(--cream-dim); max-width: 560px;
+    margin-bottom: 40px; line-height: 1.7;
+  }
+  .hero-meta {
+    display: flex; gap: 32px; flex-wrap: wrap;
+    font-family: "Space Mono", monospace; font-size: 0.82rem; color: var(--cream-dim);
+    margin-bottom: 40px;
+  }
+  .hero-meta span { display: flex; align-items: center; gap: 8px; }
+  .hero-cta { display: flex; gap: 16px; flex-wrap: wrap; }
+  .btn {
+    font-family: "Space Mono", monospace; font-size: 0.85rem; font-weight: 700;
+    padding: 12px 24px; border-radius: 8px; cursor: pointer; transition: 0.2s;
+    display: inline-flex; align-items: center; gap: 8px; border: none;
+  }
+  .btn-primary { background: var(--accent); color: #fff; }
+  .btn-primary:hover { background: var(--cream); color: var(--ink); }
+  .btn-secondary {
+    background: transparent; color: var(--cream-dim);
+    border: 1px solid var(--line);
+  }
+  .btn-secondary:hover { border-color: var(--cream); color: var(--cream); background: rgba(244,236,220,0.04); }
+
+  /* ---- Section wrapper ---- */
+  section { padding: 80px 32px; }
+  .section-inner { max-width: 1100px; margin: 0 auto; }
+  .section-eyebrow {
+    font-family: "Space Mono", monospace; font-size: 0.78rem;
+    letter-spacing: 0.2em; text-transform: uppercase; color: var(--gold);
+    margin-bottom: 16px;
+  }
+  .section-title {
+    font-family: "Bricolage Grotesque", sans-serif; font-weight: 800;
+    font-size: clamp(1.8rem, 3vw, 2.6rem); letter-spacing: -0.02em; margin-bottom: 12px;
+  }
+  .section-desc { color: var(--cream-dim); max-width: 560px; margin-bottom: 48px; }
+
+  /* ---- TRACKS OPTIONAL: Remove this entire block for no-track events ---- */
+  .tracks-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 20px;
+  }
+  .track-card {
+    background: var(--ink-2); border: 1px solid var(--line); border-radius: 16px;
+    padding: 28px; display: flex; flex-direction: column; gap: 12px;
+    border-left: 4px solid var(--c, var(--accent));
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  .track-card:hover { transform: translateY(-3px); box-shadow: 0 8px 32px rgba(0,0,0,0.4); }
+  .track-card-header { display: flex; align-items: center; gap: 12px; }
+  .track-emoji { font-size: 1.6rem; }
+  .track-name { font-family: "Bricolage Grotesque", sans-serif; font-size: 1.2rem; font-weight: 800; }
+  .track-theme {
+    font-family: "Space Mono", monospace; font-size: 0.72rem; letter-spacing: 0.12em;
+    text-transform: uppercase; color: var(--cream-dim);
+  }
+  .track-desc { font-size: 0.9rem; color: var(--cream-dim); line-height: 1.6; flex: 1; }
+  /* ---- end tracks block ---- */
+
+  /* ---- Setup steps ---- */
+  .setup-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; }
+  .setup-card {
+    background: var(--ink-2); border: 1px solid var(--line); border-radius: 14px; padding: 24px;
+  }
+  .setup-num {
+    font-family: "Space Mono", monospace; font-size: 0.72rem; letter-spacing: 0.12em;
+    text-transform: uppercase; color: var(--accent); margin-bottom: 10px;
+  }
+  .setup-title { font-family: "Bricolage Grotesque", sans-serif; font-size: 1.1rem; font-weight: 700; margin-bottom: 8px; }
+  .setup-desc { font-size: 0.88rem; color: var(--cream-dim); line-height: 1.5; }
+  .setup-link { display: inline-block; margin-top: 10px; font-family: "Space Mono", monospace; font-size: 0.78rem; color: var(--accent-2); }
+  .setup-link:hover { color: var(--cream); }
+
+  /* ---- Code block ---- */
+  .code-block {
+    background: #090704; border: 1px solid var(--line); border-radius: 12px;
+    padding: 24px; font-family: "Space Mono", monospace; font-size: 0.88rem;
+    line-height: 1.8; color: var(--cream); overflow-x: auto; margin: 24px 0;
+  }
+  .code-block .c { color: rgba(244,236,220,0.4); }
+  .code-block .p { color: var(--gold); font-weight: 700; }
+
+  /* ---- Footer ---- */
+  footer {
+    border-top: 1px solid var(--line); padding: 40px 32px;
+    display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px;
+  }
+  .footer-brand { font-family: "Space Mono", monospace; font-size: 0.78rem; color: var(--cream-dim); }
+  .footer-links { display: flex; gap: 20px; }
+  .footer-links a { font-family: "Space Mono", monospace; font-size: 0.78rem; color: var(--cream-dim); border-bottom: none; }
+  .footer-links a:hover { color: var(--cream); }
+
+  @media (max-width: 640px) {
+    nav { padding: 0 16px; }
+    .hero { padding: 60px 16px; }
+    section { padding: 60px 16px; }
+    footer { padding: 32px 16px; flex-direction: column; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <span class="nav-brand">{{ORGANIZER_NAME}}</span>
+  <div class="nav-links">
+    <!-- TALK OPTIONAL: Remove the "Talk" link if no speaker talk -->
+    <a href="talk.html">Talk</a>
+    <a href="resources.html">Resources</a>
+    <a href="codelab.html">Codelab</a>
+    <a href="https://github.com/{{ORGANIZER_GITHUB}}/{{REPO_SLUG}}" target="_blank">GitHub ↗</a>
+  </div>
+</nav>
+
+<!-- Hero -->
+<div class="hero">
+  <div class="hero-inner">
+    <p class="hero-eyebrow">{{ORGANIZER_NAME}}</p>
+    <h1 class="hero-title">{{EVENT_NAME}}<br><span>{{EVENT_TAGLINE}}</span></h1>
+    <p class="hero-desc">
+      <!-- TRACKS OPTIONAL: Replace description below for code-along events with no tracks -->
+      Choose a track, open the kit, and ship a real AI prototype — all in two hours.
+    </p>
+    <div class="hero-meta">
+      <span>📅 {{EVENT_DATE}}</span>
+      <span>📍 {{EVENT_LOCATION}}</span>
+      <span>⏱ Two hours</span>
+    </div>
+    <div class="hero-cta">
+      <a class="btn btn-primary" href="codelab.html">Start the Codelab →</a>
+      <a class="btn btn-secondary" href="https://github.com/{{ORGANIZER_GITHUB}}/{{REPO_SLUG}}" target="_blank">GitHub Kit</a>
+    </div>
+  </div>
+</div>
+
+<!-- TRACKS OPTIONAL: Remove this entire <section> for code-along events with no tracks -->
+<section id="tracks">
+  <div class="section-inner">
+    <p class="section-eyebrow">
+      <!-- THEME OPTIONAL: Replace with your theme name, or remove if no theme -->
+      {{EVENT_THEME}}
+    </p>
+    <h2 class="section-title">Pick Your Track</h2>
+    <p class="section-desc">Five ways to build something real for your community. Pick one and open the kit.</p>
+
+    <div class="tracks-grid">
+      <!-- Repeat this card for each track. Remove unused cards. -->
+      <div class="track-card" style="--c: var(--accent);">
+        <div class="track-card-header">
+          <span class="track-emoji"><!-- emoji --></span>
+          <div>
+            <div class="track-name">{{TRACK_1_NAME}}</div>
+            <!-- THEME OPTIONAL: Remove track-theme span if tracks have no individual themes -->
+            <div class="track-theme">{{TRACK_1_DESC}}</div>
+          </div>
+        </div>
+        <p class="track-desc">{{TRACK_1_DESC}}</p>
+      </div>
+      <!-- Add more .track-card divs here following the same pattern -->
+      <!-- <div class="track-card" style="--c: var(--accent-2);">...</div> -->
+    </div>
+  </div>
+</section>
+<!-- end tracks section -->
+
+<!-- Getting Started -->
+<section id="setup" style="background: var(--ink-2);">
+  <div class="section-inner">
+    <p class="section-eyebrow">Before You Arrive</p>
+    <h2 class="section-title">Four things to install</h2>
+    <p class="section-desc">Get these set up before the jam so you're ready to build the moment doors open.</p>
+
+    <div class="setup-grid">
+      <div class="setup-card">
+        <div class="setup-num">01</div>
+        <div class="setup-title">Antigravity</div>
+        <p class="setup-desc">The agentic coding assistant that will write and run code for you.</p>
+        <a class="setup-link" href="https://antigravity.google/download" target="_blank">antigravity.google/download →</a>
+      </div>
+      <div class="setup-card">
+        <div class="setup-num">02</div>
+        <div class="setup-title">uv</div>
+        <p class="setup-desc">Python package manager. Runs your app in one command.</p>
+        <a class="setup-link" href="https://astral.sh/uv" target="_blank">astral.sh/uv →</a>
+      </div>
+      <div class="setup-card">
+        <div class="setup-num">03</div>
+        <div class="setup-title">Git + GitHub</div>
+        <p class="setup-desc">Downloads the kit and backs up your work.</p>
+        <a class="setup-link" href="https://git-scm.com" target="_blank">git-scm.com →</a>
+      </div>
+      <div class="setup-card">
+        <div class="setup-num">04</div>
+        <div class="setup-title">Free Gemini Key</div>
+        <p class="setup-desc">Powers the AI. Free tier covers the entire jam.</p>
+        <a class="setup-link" href="https://aistudio.google.com/app/apikey" target="_blank">aistudio.google.com →</a>
+      </div>
+    </div>
+
+    <h3 style="font-family:'Bricolage Grotesque',sans-serif;font-size:1.4rem;margin:48px 0 16px;">Run a kit in 90 seconds</h3>
+    <div class="code-block">
+<span class="c"># clone the repo</span>
+<span class="p">$</span> git clone https://github.com/{{ORGANIZER_GITHUB}}/{{REPO_SLUG}}.git
+<span class="c"># go into your track folder</span>
+<span class="p">$</span> cd {{REPO_SLUG}}/tracks/{{TRACK_1_NAME}}
+<span class="c"># add your Gemini key</span>
+<span class="p">$</span> cp .env.example .env
+<span class="c"># go</span>
+<span class="p">$</span> uv run app.py</div>
+  </div>
+</section>
+
+<footer>
+  <span class="footer-brand">{{ORGANIZER_NAME}} · {{EVENT_DATE}} · {{EVENT_LOCATION}}</span>
+  <div class="footer-links">
+    <a href="codelab.html">Codelab</a>
+    <a href="resources.html">Resources</a>
+    <a href="https://github.com/{{ORGANIZER_GITHUB}}/{{REPO_SLUG}}" target="_blank">GitHub</a>
+  </div>
+</footer>
+
+</body>
+</html>

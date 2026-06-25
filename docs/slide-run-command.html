@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Run a kit — slide</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Public+Sans:wght@400;500;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+<style>
+  :root{--ink:#17110C;--ink2:#211a13;--cream:#F4ECDC;--dim:#cdc2ad;--gold:#E8A33D;--clay:#D24A33;--green:#46A35E;--line:rgba(244,236,220,.14)}
+  *{margin:0;padding:0;box-sizing:border-box}
+  html,body{height:100%}
+  body{background:#000;display:flex;align-items:center;justify-content:center;font-family:"Public Sans",sans-serif}
+  /* 16:9 stage that scales to the window */
+  .slide{position:relative;width:100vw;max-width:177.78vh;height:56.25vw;max-height:100vh;
+    background:var(--ink);color:var(--cream);overflow:hidden;display:flex;flex-direction:column;
+    justify-content:center;padding:0 6.5%}
+  .glow::before{content:"";position:absolute;top:-20%;right:-8%;width:46%;height:90%;border-radius:50%;
+    background:radial-gradient(circle,rgba(210,74,51,.28),transparent 62%)}
+  .glow::after{content:"";position:absolute;bottom:-26%;left:-8%;width:40%;height:80%;border-radius:50%;
+    background:radial-gradient(circle,rgba(70,163,94,.2),transparent 64%)}
+  .eyebrow{font-family:"Space Mono",monospace;font-size:1.1vw;letter-spacing:.22em;text-transform:uppercase;color:var(--gold);position:relative;z-index:2}
+  h1{font-family:"Bricolage Grotesque",sans-serif;font-weight:800;font-size:5.4vw;line-height:.98;letter-spacing:-.02em;margin:.18em 0 .55em;position:relative;z-index:2}
+  h1 span{color:var(--gold)}
+  .row{display:flex;gap:3vw;align-items:stretch;position:relative;z-index:2}
+  .term{flex:1.25;background:#0e0a06;border:1px solid var(--line);border-radius:14px;overflow:hidden}
+  .term .bar{display:flex;gap:.6vw;padding:1.1vw 1.4vw;border-bottom:1px solid var(--line)}
+  .term .bar i{width:1vw;height:1vw;border-radius:50%}
+  .term pre{padding:1.6vw 1.6vw;font-family:"Space Mono",monospace;font-size:1.45vw;line-height:2.05;color:var(--cream)}
+  .term .c{color:#7fae84}.term .p{color:var(--gold)}
+  .pre-list{flex:.85;display:flex;flex-direction:column;justify-content:center;gap:1.2vw}
+  .pre-list .t{font-family:"Space Mono",monospace;font-size:1vw;letter-spacing:.16em;text-transform:uppercase;color:var(--dim)}
+  .pre-list li{list-style:none;font-size:1.45vw;font-weight:500;display:flex;gap:.8vw;align-items:baseline}
+  .pre-list li b{color:var(--gold);font-family:"Space Mono",monospace}
+  .foot{position:absolute;bottom:3.2vw;left:6.5%;right:6.5%;display:flex;justify-content:space-between;
+    align-items:center;font-family:"Space Mono",monospace;font-size:1vw;color:var(--dim);z-index:2}
+  .foot .star{width:1.8vw;height:1.8vw;color:var(--gold);vertical-align:middle;margin-right:.5vw}
+</style>
+</head>
+<body>
+  <div class="slide glow">
+    <svg width="0" height="0" style="position:absolute"><symbol id="nova" viewBox="0 0 100 100"><path fill="currentColor" d="M50 12 L56 44 L88 50 L56 56 L50 88 L44 56 L12 50 L44 44 Z"/></symbol></svg>
+
+    <p class="eyebrow">{{ORGANIZER_NAME}} · {{EVENT_NAME}}</p>
+    <h1>Run a kit in <span>90 seconds.</span></h1>
+
+    <div class="row">
+      <div class="term">
+        <div class="bar"><i style="background:#D24A33"></i><i style="background:#E8A33D"></i><i style="background:#46A35E"></i></div>
+<pre><span class="c"># grab the kit</span>
+<span class="p">$</span> git clone <span style="color:var(--dim)">&lt;repo on screen&gt;</span>
+<span class="c"># go into your track folder</span>
+<span class="p">$</span> cd .../tracks/{{TRACK_1_NAME}}
+
+<span class="c"># add your free Gemini key</span>
+<span class="p">$</span> cp .env.example .env
+
+<span class="c"># go</span>
+<span class="p">$</span> uv run app.py</pre>
+      </div>
+
+      <ul class="pre-list">
+        <li class="t">Need installed first</li>
+        <li><b>1</b> Antigravity — antigravity.google</li>
+        <li><b>2</b> uv — astral.sh/uv</li>
+        <li><b>3</b> Git + GitHub account</li>
+        <li><b>4</b> Gemini key — aistudio.google.com/app/apikey</li>
+      </ul>
+    </div>
+
+    <div class="foot">
+      <span><svg class="star"><use href="#nova"/></svg>{{EVENT_TAGLINE}}</span>
+      <span>{{ORGANIZER_GITHUB}}.github.io/{{REPO_SLUG}}</span>
+    </div>
+  </div>
+</body>
+</html>
